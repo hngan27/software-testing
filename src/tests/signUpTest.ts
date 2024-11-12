@@ -74,14 +74,25 @@ export async function testSignUp() {
       await page.fill('input[name="user_email"]', item.email);
       await page.fill('input[name="password"]', item.password);
 
-      const iframe = await page.frameLocator('iframe[title="reCAPTCHA"]');
-      const recaptchaCheckbox = await iframe.locator(".recaptcha-checkbox");
-      await recaptchaCheckbox.click();
+      // const iframe = await page.frameLocator('iframe[title="reCAPTCHA"]');
+      // const recaptchaCheckbox = await iframe.locator(".recaptcha-checkbox");
+      // await recaptchaCheckbox.click();
 
       // ????????
 
-      await page.click('button:has-text("Sign Up")');
+      // Gỡ bỏ thuộc tính 'disabled' của nút Submit
+      await page.evaluate(() => {
+        const submitButton = document.getElementById("submitBTN");
+        if (submitButton) {
+          submitButton.removeAttribute("disabled");
+        }
+      });
 
+      // Nhấn vào nút Submit
+      const submitButton = await page.locator("#submitBTN");
+      await submitButton.click();
+
+      // Kiểm tra kết quả, ví dụ sau khi đăng ký thành công
       await page.waitForTimeout(5000);
 
       if (page.url().includes("signup_success")) {
